@@ -5,3 +5,14 @@ An AI agent that can answer questions from internal documents (HR policies, manu
 # Development:
 
 - Project initialized using uv
+
+# Project Structure
+
+```
+src/
+    ├── main.py
+    ├── utils/
+    └── tests/
+pyproject.toml
+README.md
+```
