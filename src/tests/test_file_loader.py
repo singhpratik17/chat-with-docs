@@ -1,14 +1,19 @@
-from pathlib import Path
 import json
+from pathlib import Path
+from fpdf import FPDF
 from src.utils.file_loader import load_file
 
 
-def test_pdf_file_loader():
-    pdf_file_content = load_file(
-        "/Users/pratik/Downloads/aJQgNGM41tvz2bVdkhAF-receipt.pdf"
-    )
-    assert pdf_file_content.startswith("Kuitti\nTalin sulkapallo- ja squashkeskus Oy")
-    assert pdf_file_content.endswith("Yhteensä: 16.00 €")
+def test_pdf_file_loader(tmp_path):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Helvetica", size=12)
+    content = "This is a pdf file created by pytest using FPDF."
+    pdf.write(text=content)
+    pdf.output(str(tmp_path / "dummy_pdf.pdf"))
+
+    pdf_file_content = load_file(str(tmp_path / "dummy_pdf.pdf"))
+    assert pdf_file_content == content
 
 
 def test_txt_file_loader(tmp_path: Path):
