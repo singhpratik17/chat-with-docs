@@ -13,3 +13,7 @@ wheels/
 .env
 
 .vscode/
+
+# Use to keep dummy files for testing
+# TODO: Remove later when tests are more sophesticated and can generate files on the fly
+/dummy
