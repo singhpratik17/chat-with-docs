@@ -1,10 +1,10 @@
 import json
 from pathlib import Path
 from fpdf import FPDF
-from src.utils.file_loader import load_file
+from src.utils.load_file import load_file
 
 
-def test_pdf_file_loader(tmp_path):
+def test_load_pdf_file(tmp_path):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Helvetica", size=12)
@@ -16,7 +16,7 @@ def test_pdf_file_loader(tmp_path):
     assert pdf_file_content == content
 
 
-def test_txt_file_loader(tmp_path: Path):
+def test_load_txt_file(tmp_path: Path):
     txt_file_path = tmp_path / "dummy_txt.txt"
     content = "This is a text file created by pytest."
 

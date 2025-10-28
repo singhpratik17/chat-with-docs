@@ -1,9 +1,10 @@
-from utils.file_loader import load_file
+from utils.load_file import load_file
 
 
 def main():
     print("Hello from chat-with-docs!")
-    load_file("/Users/pratik/Downloads/aJQgNGM41tvz2bVdkhAF-receipt.pdf")
+    f = load_file("/Users/pratik/Downloads/aJQgNGM41tvz2bVdkhAF-receipt.pdf")
+    print(f)
 
 
 if __name__ == "__main__":
