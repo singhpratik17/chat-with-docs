@@ -8,12 +8,17 @@ def test_load_pdf_file(tmp_path):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Helvetica", size=12)
-    content = "This is a pdf file created by pytest using FPDF."
+    content = "This is a pdf file created by pytest using FPDF.\n\n\nTesting new line."
     pdf.write(text=content)
+    pdf.add_page()
+    pdf.write(text="Some random text")
     pdf.output(str(tmp_path / "dummy_pdf.pdf"))
 
     pdf_file_content = load_file(str(tmp_path / "dummy_pdf.pdf"))
-    assert pdf_file_content == content
+    assert pdf_file_content.page_content.startswith(
+        "This is a pdf file created by pytest using FPDF. Testing new line."
+    )
+    assert pdf_file_content.page_content.endswith("Some random text")
 
 
 def test_load_txt_file(tmp_path: Path):
@@ -24,7 +29,7 @@ def test_load_txt_file(tmp_path: Path):
         txt_file.write(content)
 
     loaded_file_content = load_file(str(txt_file_path))
-    assert loaded_file_content == content
+    assert loaded_file_content.page_content == content
 
 
 def test_unsupported_file_format(tmp_path: Path):
