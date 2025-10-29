@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from fpdf import FPDF
-from ingestion.ingest import load_file, ingest
+from src.ingestion.loaders import load_file, ingest
 
 
 def test_load_pdf_file(tmp_path):
