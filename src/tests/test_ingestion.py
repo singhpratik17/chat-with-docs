@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from fpdf import FPDF
-from ingestion.loaders import loaders
+from ingestion.ingest import load_file, ingest
 
 
 def test_load_pdf_file(tmp_path):
@@ -14,11 +14,11 @@ def test_load_pdf_file(tmp_path):
     pdf.write(text="Some random text")
     pdf.output(str(tmp_path / "dummy_pdf.pdf"))
 
-    pdf_file_content = loaders(str(tmp_path / "dummy_pdf.pdf"))
-    assert pdf_file_content.page_content.startswith(
-        "This is a pdf file created by pytest using FPDF. Testing new line."
+    pdf_file_content = load_file(str(tmp_path / "dummy_pdf.pdf"))
+    assert pdf_file_content[0].page_content.startswith(
+        "This is a pdf file created by pytest using FPDF."
     )
-    assert pdf_file_content.page_content.endswith("Some random text")
+    assert pdf_file_content[0].page_content.endswith("Some random text")
 
 
 def test_load_txt_file(tmp_path: Path):
@@ -28,8 +28,8 @@ def test_load_txt_file(tmp_path: Path):
     with open(txt_file_path, "w") as txt_file:
         txt_file.write(content)
 
-    loaded_file_content = loaders(str(txt_file_path))
-    assert loaded_file_content.page_content == content
+    loaded_file_content = load_file(str(txt_file_path))
+    assert loaded_file_content[0].page_content == content
 
 
 def test_unsupported_file_format(tmp_path: Path):
@@ -42,16 +42,21 @@ def test_unsupported_file_format(tmp_path: Path):
     with open(json_file_path, "w") as json_file:
         json.dump(content, json_file)
 
-    unsupported_file = loaders(str(tmp_path / "dummy_json.json"))
+    unsupported_file = load_file(str(tmp_path / "dummy_json.json"))
     assert unsupported_file == "Unsupported file format."
 
 
 def test_file_not_exists(tmp_path: Path):
-    pdf_not_exists = loaders(str(tmp_path / "not_exists.pdf"))
+    pdf_not_exists = load_file(str(tmp_path / "not_exists.pdf"))
     assert pdf_not_exists == "Input not a file."
 
-    txt_not_exists = loaders(str(tmp_path / "not_exists.txt"))
+    txt_not_exists = load_file(str(tmp_path / "not_exists.txt"))
     assert txt_not_exists == "Input not a file."
 
-    invalid_dir = loaders(str(tmp_path / "some_dir"))
+    invalid_dir = load_file(str(tmp_path / "some_dir"))
     assert invalid_dir == "Input not a file."
+
+
+def test_ingest():
+    out = ingest("/Users/pratik/Downloads/StrengthsProfile-Pratik-Singh.pdf")
+    print(f"Splitted document: {out}")

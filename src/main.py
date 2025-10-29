@@ -1,4 +1,4 @@
-from src.ingestion.loaders import load_file
+from src.ingestion.ingest import load_file
 
 
 def main():
