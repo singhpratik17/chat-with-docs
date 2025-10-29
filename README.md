@@ -11,7 +11,8 @@ An AI agent that can answer questions from internal documents (HR policies, manu
 ```
 src/
     ├── main.py
-    ├── utils/
+    ├── ingestion/
+    ├── embeddings/
     └── tests/
 pyproject.toml
 README.md
