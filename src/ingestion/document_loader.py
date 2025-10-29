@@ -1,7 +1,8 @@
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_core.documents import Document
 from pathlib import Path
-from ingestion.preprocessors import clean_text, split_text
+from ingestion.text_cleaner import clean_text
+from ingestion.text_splitter import split_text
 
 
 def load_file(file_path: str):
