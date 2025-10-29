@@ -1,10 +1,9 @@
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.document_loaders import TextLoader
+from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_core.documents import Document
 from pathlib import Path
 
 
-def load_file(file_path: str) -> Document:
+def loaders(file_path: str) -> Document:
     """Loads a pdf or txt file and returns contents of the file or errors as str."""
     if not Path(file_path).is_file():
         return "Input not a file."
