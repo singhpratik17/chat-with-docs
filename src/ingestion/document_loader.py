@@ -3,10 +3,11 @@ from langchain_core.documents import Document
 from pathlib import Path
 from ingestion.text_cleaner import clean_text
 from ingestion.text_splitter import split_text
+from ingestion.embeddings_generator import generate_embeddings
 
 
-def load_file(file_path: str):
-    """Loads a pdf or txt file and returns contents of the file or errors as str."""
+def load_file(file_path: str) -> list[Document]:
+    """Loads a pdf or txt file and returns list of langchain document."""
 
     if not Path(file_path).is_file():
         return "Input not a file."
@@ -36,7 +37,7 @@ def load_file(file_path: str):
     return documents
 
 
-def ingest(file_path: str) -> list[Document]:
+def ingest(file_path: str):
     # Load the file
     documents = load_file(file_path=file_path)
 
@@ -46,4 +47,7 @@ def ingest(file_path: str) -> list[Document]:
     # Split
     splitted_documents = split_text(cleaned_documents)
 
-    return splitted_documents
+    # embeddings
+    embeddings = generate_embeddings(splitted_documents)
+
+    return embeddings

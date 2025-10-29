@@ -3,6 +3,8 @@ from pathlib import Path
 from fpdf import FPDF
 from src.ingestion.document_loader import load_file, ingest
 
+# from src.ingestion.embeddings_generator import generate_embeddings
+
 
 def test_load_pdf_file(tmp_path):
     pdf = FPDF()
@@ -15,6 +17,9 @@ def test_load_pdf_file(tmp_path):
     pdf.output(str(tmp_path / "dummy_pdf.pdf"))
 
     pdf_file_content = load_file(str(tmp_path / "dummy_pdf.pdf"))
+
+    assert len(pdf_file_content) == 1
+
     assert pdf_file_content[0].page_content.startswith(
         "This is a pdf file created by pytest using FPDF."
     )
@@ -29,6 +34,7 @@ def test_load_txt_file(tmp_path: Path):
         txt_file.write(content)
 
     loaded_file_content = load_file(str(txt_file_path))
+    assert len(loaded_file_content) == 1
     assert loaded_file_content[0].page_content == content
 
 
@@ -58,5 +64,10 @@ def test_file_not_exists(tmp_path: Path):
 
 
 def test_ingest():
-    out = ingest("/Users/pratik/Downloads/StrengthsProfile-Pratik-Singh.pdf")
-    print(f"Splitted document: {out}")
+    ingest("/Users/pratik/Downloads/StrengthsProfile-Pratik-Singh.pdf")
+    # print(f"Embedded document: {out}")
+
+
+# def test_generate_embeddings():
+#     out = generate_embeddings()
+#     print(f"Generated embedding: {out}")

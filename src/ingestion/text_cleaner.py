@@ -1,4 +1,7 @@
-def clean_text(documents):
+from langchain_core.documents import Document
+
+
+def clean_text(documents: list[Document]) -> list[Document]:
     """Clean langchain documents"""
 
     cleaned_documents = []
