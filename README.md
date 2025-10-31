@@ -33,6 +33,20 @@ ToolMessage : [retrieved chunks removed]
 AIMessage : The Tax card office is located at Hämeentie 15. You can also reach them by calling +35829497050. If you have online banking details, you can create a tax card through Mytax services.
 ```
 
+### Sample prompt 3
+
+```
+src/tests/test_agent.py
+
+HumanMessage : Why is Halloween celebrated?
+
+AIMessage : 
+
+ToolMessage : [retrieved chunks removed]
+
+AIMessage : [removed]
+```
+
 # Development:
 
 - Project initialized using uv
