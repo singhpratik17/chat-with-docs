@@ -89,9 +89,24 @@ def ingest(file_path: str):
         print(f"* {doc.page_content} [{doc.metadata}]")
 
 
+def extract_text(message):
+    content = message.content
+    if isinstance(content, str):
+        return content.strip()
+    elif isinstance(content, list):
+        # Collect text parts if any
+        texts = [
+            c["text"]
+            for c in content
+            if isinstance(c, dict) and c.get("type") == "text"
+        ]
+        return " ".join(texts).strip()
+    return str(content)
+
+
 def propmt_gemini(query):
     load_dotenv()  # Move to main.py
     agent = init_agent()
     messages = invoke_agent(agent, query=query)["messages"]
     for msg in messages:
-        print(type(msg).__name__, ":", msg.content)
+        print(f"\n{type(msg).__name__} : { extract_text(msg)}")
