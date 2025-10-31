@@ -38,11 +38,17 @@ def create_vector_store(client, collection_name):
     )
 
 
+def get_vector_store(collection_name):
+    client = create_client()
+    return create_vector_store(client, collection_name=collection_name)
+
+
 def add_documents(vector_store, documents, ids):
     return vector_store.add_documents(documents=documents, ids=ids)
 
 
-def similarity_search(vector_store, query, k=2, filter=None):
+def similarity_search(collection_name, query, k=2, filter=None):
+    vector_store = get_vector_store(collection_name=collection_name)
     return vector_store.similarity_search(query, k, filter)
 
 

@@ -8,9 +8,10 @@ from retrieval.db_operations import (
     generate_ids,
     create_client,
     create_vector_store,
-    similarity_search,
     add_documents,
+    embeddings_generator,
 )
+from agent.agent import init_agent, invoke_agent
 
 
 def load_file(file_path: str) -> list[Document]:
@@ -65,23 +66,32 @@ def ingest(file_path: str):
     print("Chrom client \n", client)
 
     # create collection
-    store = create_vector_store(client, collection_name="test_d")
+    store = create_vector_store(client, collection_name="expat_handbook_2")
 
     # add documents
 
     add_documents(vector_store=store, documents=chunks, ids=ids)
 
-    results = similarity_search(
-        store,
-        "those in which sharing & caring are reciprocated",
-        k=2,
-    )
-
-    for res in results:
-        print(res.page_content)
-
-    # results = store.similarity_search_by_vector(
-    #     embedding=embeddings_generator().embed_query("those in which sharing & caring are reciprocated"), k=1
+    # results = similarity_search(
+    #     store,
+    #     "those in which sharing & caring are reciprocated",
+    #     k=2,
     # )
-    # for doc in results:
-    #     print(f"* {doc.page_content} [{doc.metadata}]")
+
+    # for res in results:
+    #     print(res.page_content)
+
+    results = store.similarity_search_by_vector(
+        embedding=embeddings_generator().embed_query("What are the bank options?"),
+        k=1,
+    )
+    for doc in results:
+        print(f"* {doc.page_content} [{doc.metadata}]")
+
+
+def propmt_gemini(query):
+    load_dotenv()  # Move to main.py
+    agent = init_agent()
+    messages = invoke_agent(agent, query=query)["messages"]
+    for msg in messages:
+        print(type(msg).__name__, ":", msg.content)

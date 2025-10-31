@@ -64,8 +64,8 @@ def test_file_not_exists(tmp_path: Path):
 
 
 def test_ingest():
-    ingest("/Users/pratik/Downloads/StrengthsProfile-Pratik-Singh.pdf")
-    # print(f"Embedded document: {out}")
+    out = ingest("dummy/sample document.pdf")
+    print(f"Embedded document: {out}")
 
 
 # def test_generate_embeddings():

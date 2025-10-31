@@ -14,5 +14,9 @@ wheels/
 
 .vscode/
 
+# local chrom db file
+chroma_langchain_db/*
+
 # Use to keep dummy files for testing
 dummy/
+
