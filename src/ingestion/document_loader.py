@@ -9,9 +9,7 @@ from retrieval.db_operations import (
     create_client,
     create_vector_store,
     add_documents,
-    embeddings_generator,
 )
-from agent.agent import init_agent, invoke_agent
 
 
 def load_file(file_path: str) -> list[Document]:
@@ -70,7 +68,9 @@ def ingest(file_path: str):
 
     # add documents
 
-    add_documents(vector_store=store, documents=chunks, ids=ids)
+    docs = add_documents(vector_store=store, documents=chunks, ids=ids)
+
+    return docs
 
     # results = similarity_search(
     #     store,
@@ -81,32 +81,9 @@ def ingest(file_path: str):
     # for res in results:
     #     print(res.page_content)
 
-    results = store.similarity_search_by_vector(
-        embedding=embeddings_generator().embed_query("What are the bank options?"),
-        k=1,
-    )
-    for doc in results:
-        print(f"* {doc.page_content} [{doc.metadata}]")
-
-
-def extract_text(message):
-    content = message.content
-    if isinstance(content, str):
-        return content.strip()
-    elif isinstance(content, list):
-        # Collect text parts if any
-        texts = [
-            c["text"]
-            for c in content
-            if isinstance(c, dict) and c.get("type") == "text"
-        ]
-        return " ".join(texts).strip()
-    return str(content)
-
-
-def propmt_gemini(query):
-    load_dotenv()  # Move to main.py
-    agent = init_agent()
-    messages = invoke_agent(agent, query=query)["messages"]
-    for msg in messages:
-        print(f"\n{type(msg).__name__} : { extract_text(msg)}")
+    # results = store.similarity_search_by_vector(
+    #     embedding=embeddings_generator().embed_query("What are the bank options?"),
+    #     k=1,
+    # )
+    # for doc in results:
+    #     print(f"* {doc.page_content} [{doc.metadata}]")
