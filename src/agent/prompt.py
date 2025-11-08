@@ -17,6 +17,8 @@ def extract_text(message):
 
 
 def prompt_gemini(agent, query):
-    messages = invoke_agent(agent, query=query)["messages"]
-    for msg in messages:
-        print(f"\n{type(msg).__name__} : { extract_text(msg)}")
+    # messages = invoke_agent(agent, query=query)["messages"]
+    # for msg in messages:
+    #     print(f"\n{type(msg).__name__} : { extract_text(msg)}")
+    result = invoke_agent(agent, query=query)
+    print("Agent: ", result["messages"][-1].content)
