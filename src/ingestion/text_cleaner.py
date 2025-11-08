@@ -13,3 +13,15 @@ def clean_text(documents: list[Document]) -> list[Document]:
         cleaned_documents.append(doc)
 
     return cleaned_documents
+
+
+def get_file_contents(documents: list[Document]) -> dict:
+    """Clean langchain documents"""
+
+    file_contents = {}
+
+    for doc in documents:
+        source = doc.metadata["source"]
+        file_contents[source] = doc.page_content
+
+    return file_contents

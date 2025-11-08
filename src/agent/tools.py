@@ -11,6 +11,6 @@ def search_db(query):
         query: Search terms to look for
         limit: Maximum number of results to return
     """
-    docs = similarity_search(collection_name="expat_handbook_2", query=query)
+    docs = similarity_search(collection_name="test_2", query=query)
     print("**********search_db tool invoked**********")
     return "".join([doc.page_content for doc in docs])
