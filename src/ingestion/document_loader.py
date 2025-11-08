@@ -6,9 +6,9 @@ from ingestion.text_cleaner import clean_text, get_file_contents
 from ingestion.text_splitter import split_documents
 from retrieval.db_operations import (
     generate_ids,
-    # create_client,
-    # create_vector_store,
-    # add_documents,
+    create_client,
+    create_vector_store,
+    add_documents,
 )
 
 
@@ -51,38 +51,29 @@ def ingest(file_paths: list[str]):
 
     # Load the file
     documents = load_files(file_paths=file_paths)
-    print(f"\n\n Docs: {documents}")
-    print(f"\n\n Length Docs: {len(documents)}")
 
     # Clean
     cleaned_documents = clean_text(documents)
-    print(f"\n\n Cleaned Docs: {cleaned_documents}")
-    print(f"\n\n Length Cleaned Docs: {len(cleaned_documents)}")
 
     cleaned_documents_file_contents = get_file_contents(cleaned_documents)
-    print(f"\n\n Cleaned file contents : {cleaned_documents_file_contents}")
-    print(f"\n\n Length cleaned file contents: {len(cleaned_documents)}")
 
     # Split
     chunks = split_documents(cleaned_documents)
-    print(f"\n\n Splitted Docs (Chunks): {chunks}")
-    print(f"\n\n Length Splitted Docs (Chunks): {len(chunks)}")
 
     # generate Ids
     ids = generate_ids(cleaned_documents_file_contents, chunks)
-    print(f"\n\n ids: {ids}")
-    print(f"\n\n Length ids: {len(ids)}")
 
     # create chroma client
-    # client = create_client()
-    # print("Chrom client \n", client)
+    client = create_client()
 
     # create collection
-    # store = create_vector_store(client, collection_name="test_2")
+    store = create_vector_store(client, collection_name="test_2")
 
     # add documents
 
-    # docs = add_documents(vector_store=store, documents=chunks, ids=ids)
+    docs = add_documents(vector_store=store, documents=chunks, ids=ids)
+
+    return docs
 
     # return docs
 

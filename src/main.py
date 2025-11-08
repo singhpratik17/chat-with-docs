@@ -10,7 +10,7 @@ def main():
 
     print("Hello from chat-with-docs! Type exit to exit")
     while True:
-        query = input("Enter your query: ")
+        query = input("\nUser: ")
         if len(query):
             if query == "exit":
                 break

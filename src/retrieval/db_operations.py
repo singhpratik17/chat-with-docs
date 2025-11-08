@@ -50,7 +50,7 @@ def add_documents(vector_store, documents, ids):
     return vector_store.add_documents(documents=documents, ids=ids)
 
 
-def similarity_search(collection_name, query, k=2, filter=None):
+def similarity_search(collection_name, query, k=3, filter=None):
     vector_store = get_vector_store(collection_name=collection_name)
     return vector_store.similarity_search(query, k, filter)
 
