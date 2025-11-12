@@ -1,21 +1,21 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import InMemorySaver
-from agent.tools import search_db
 from langchain.agents.structured_output import ToolStrategy
+from .tools import search_db
 
 
-contact_info_schema = {
+agent_answer_format = {
     "type": "object",
-    "description": "Answer to the Query.",
+    "description": "Answer to the query with reference to the docs.",
     "properties": {
         "text_response": {
             "type": "string",
-            "description": "Final formatted answer to the query",
+            "description": "Final answer to the query",
         },
         "file_name": {
             "type": "string",
-            "description": "The file name where the answer was found. Obtain from source in metadata, only the file name and not the whole path",
+            "description": "Source file name",
         },
     },
     "required": ["text_response", "file_name"],
@@ -38,16 +38,16 @@ def init_agent():
     agent = create_agent(
         model=model,
         tools=tools,
-        system_prompt="You are an AI Agent which searches the uploaded documents using the provided tools to answer the query. Search the memory first and then the documents before answering. Address the user with name if provided. Be concise and accurate. Use a conversational tone.",
+        system_prompt="You are an AI Agent which searches the uploaded documents using the provided tools to answer the query. Search the memory first and then the documents before answering. Be concise and accurate.",
         checkpointer=InMemorySaver(),
-        response_format=ToolStrategy(contact_info_schema),
+        response_format=ToolStrategy(agent_answer_format),
     )
 
     return agent
 
 
-def invoke_agent(agent, query: str, thread_id: str = "1"):
-    return agent.invoke(
+async def invoke_agent(agent, query: str, thread_id: str = "1"):
+    return await agent.ainvoke(
         {"messages": [{"role": "user", "content": query}]},
         {"configurable": {"thread_id": thread_id}},
     )

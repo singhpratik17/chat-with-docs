@@ -23,11 +23,11 @@ def extract_text(message):
         return message[0]["text"]
 
 
-def prompt_gemini(agent, query):
+async def prompt_gemini(agent, query):
     # messages = invoke_agent(agent, query=query)["messages"]
     # for msg in messages:
     #     print(f"\n{type(msg).__name__} : { extract_text(msg)}")
-    result = invoke_agent(agent, query=query)
+    result = await invoke_agent(agent, query=query)
     # print("\nAgent: ", extract_text(result["messages"][-1].content))
     text_content = result["structured_response"]["text_response"]
     file_name = result["structured_response"]["file_name"]

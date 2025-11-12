@@ -1,4 +1,3 @@
-# import sys
 from dotenv import load_dotenv
 from agent.agent import init_agent
 from agent.prompt import prompt_gemini
