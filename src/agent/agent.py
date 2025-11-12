@@ -2,14 +2,14 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import InMemorySaver
 from langchain.agents.structured_output import ToolStrategy
-from .tools import search_db
+from src.agent.tools import make_search_db_tool
 
 
 agent_answer_format = {
     "type": "object",
     "description": "Answer to the query with reference to the docs.",
     "properties": {
-        "text_response": {
+        "message": {
             "type": "string",
             "description": "Final answer to the query",
         },
@@ -18,11 +18,11 @@ agent_answer_format = {
             "description": "Source file name",
         },
     },
-    "required": ["text_response", "file_name"],
+    "required": ["message", "file_name"],
 }
 
 
-def init_agent():
+def init_agent(google_api_key, vector_store):
     model = ChatGoogleGenerativeAI(
         model="gemini-2.5-flash",
         temperature=0.1,
@@ -31,7 +31,10 @@ def init_agent():
         timeout=None,
         max_retries=1,
         model_kwargs={"handle_parsing_errors": True},
+        google_api_key=google_api_key,
     )
+
+    search_db = make_search_db_tool(vector_store)
 
     tools = [search_db]
 
@@ -44,10 +47,3 @@ def init_agent():
     )
 
     return agent
-
-
-async def invoke_agent(agent, query: str, thread_id: str = "1"):
-    return await agent.ainvoke(
-        {"messages": [{"role": "user", "content": query}]},
-        {"configurable": {"thread_id": thread_id}},
-    )

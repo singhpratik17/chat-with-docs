@@ -8,9 +8,11 @@ def create_client():
     return chromadb.PersistentClient(path="./chroma_langchain_db")
 
 
-def embeddings_generator():
+def embeddings_generator(google_api_key):
     """Returns langchain Gemini embedding function"""
-    return GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+    return GoogleGenerativeAIEmbeddings(
+        model="models/gemini-embedding-001", google_api_key=google_api_key
+    )
 
 
 def create_vector_store(client, collection_name, embedding_function):

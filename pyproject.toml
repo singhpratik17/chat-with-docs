@@ -11,6 +11,7 @@ dependencies = [
     "langchain-community>=0.4.1",
     "langchain-google-genai>=3.0.0",
     "onnxruntime==1.18.0",
+    "pydantic-settings>=2.11.0",
     "pypdf>=6.1.3",
 ]
 

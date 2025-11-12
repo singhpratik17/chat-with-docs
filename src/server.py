@@ -1,15 +1,44 @@
+from functools import lru_cache
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-import asyncio
-from agent.agent import init_agent
-from chroma_db.client import create_client, embeddings_generator
+from src.agent.agent import init_agent
+from src.chroma_db.client import (
+    create_client,
+    embeddings_generator,
+    create_vector_store,
+)
+from .config import Settings
+
+from src.agent.routes import agent_router
+
+
+@lru_cache
+def get_settings():
+    return Settings()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.agent = await asyncio.to_thread(init_agent)
-    app.state.embeddingsGenerator = await asyncio.to_thread(embeddings_generator)
-    app.state.chroma_client = await asyncio.to_thread(create_client)
+    print("Starting initialization...")
+    settings = get_settings()
+    chroma_client = create_client()
+    embedding_function = embeddings_generator(google_api_key=settings.google_api_key)
+    # Chroma Vector Store
+    app.state.vector_store = create_vector_store(
+        client=chroma_client,
+        collection_name="test_2",
+        embedding_function=embedding_function,
+    )
+    # Gemini Agent
+    app.state.agent = init_agent(
+        google_api_key=settings.google_api_key, vector_store=app.state.vector_store
+    )
+    print("Initialization Complete...")
+
+    yield
+    print("Application shutting down.")
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(title="Chat with docs api server", lifespan=lifespan)
+
+app.include_router(agent_router)

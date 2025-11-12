@@ -405,6 +405,7 @@ dependencies = [
     { name = "langchain-community" },
     { name = "langchain-google-genai" },
     { name = "onnxruntime" },
+    { name = "pydantic-settings" },
     { name = "pypdf" },
 ]
 
@@ -425,6 +426,7 @@ requires-dist = [
     { name = "langchain-community", specifier = ">=0.4.1" },
     { name = "langchain-google-genai", specifier = ">=3.0.0" },
     { name = "onnxruntime", specifier = "==1.18.0" },
+    { name = "pydantic-settings", specifier = ">=2.11.0" },
     { name = "pypdf", specifier = ">=6.1.3" },
 ]
 

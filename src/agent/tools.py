@@ -1,17 +1,18 @@
 from langchain.tools import tool
-from retrieval.db_operations import similarity_search
+from src.chroma_db.db_operations import similarity_search
 
 
-@tool
-def search_db(query):
-    """Search the database for records matching the user query.
+def make_search_db_tool(vector_store):
+    @tool
+    def search_db(query):
+        """Search the database for records matching the user query.
 
-    Args:
-        collection_name: Chroma store instance
-        query: Search terms to look for
-        limit: Maximum number of results to return
-    """
-    docs = similarity_search(collection_name="test_2", query=query)
-    print("\nSearching the database")
-    # return "".join([doc.page_content for doc in docs])
-    return docs
+        Args:
+            collection_name: Chroma store instance
+            query: Search terms to look for
+            limit: Maximum number of results to return
+        """
+        print("Searching in DB")
+        return similarity_search(vector_store, query=query)
+
+    return search_db
