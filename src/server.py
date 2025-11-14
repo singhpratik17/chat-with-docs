@@ -1,15 +1,15 @@
 from functools import lru_cache
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from src.agent.agent import init_agent
-from src.chroma_db.client import (
+from .agent.agent import init_agent
+from .chroma_db.client import (
     create_client,
     embeddings_generator,
     create_vector_store,
 )
 from .config import Settings
-
-from src.agent.routes import agent_router
+from .agent.routes import agent_router
+from .ingestion.routes import ingestion_router
 
 
 @lru_cache
@@ -42,3 +42,4 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Chat with docs api server", lifespan=lifespan)
 
 app.include_router(agent_router)
+app.include_router(ingestion_router)

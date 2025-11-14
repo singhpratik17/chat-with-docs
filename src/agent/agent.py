@@ -2,7 +2,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import InMemorySaver
 from langchain.agents.structured_output import ToolStrategy
-from src.agent.tools import make_search_db_tool
+from .tools import make_search_db_tool
 
 
 agent_answer_format = {

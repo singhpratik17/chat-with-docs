@@ -1,11 +1,5 @@
 import hashlib
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_core.documents import Document
-
-
-def embeddings_generator():
-    """Returns langchain Gemini embedding function"""
-    return GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
 
 
 def generate_hash(hash_str: str):

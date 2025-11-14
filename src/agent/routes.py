@@ -1,17 +1,19 @@
 from fastapi import APIRouter, Depends, Request
 from .prompt import ask_gemini
-
-agent_router = APIRouter(prefix="/ask-agent")
+from pydantic import BaseModel
 
 
 def get_agent(request: Request):
     return request.app.state.agent
 
 
-def get_vector_store(request: Request):
-    return request.app.state.vector_store
+agent_router = APIRouter(prefix="/ask-agent", dependencies=[Depends(get_agent)])
 
 
-@agent_router.get("/")
-async def ask_agent(query: str, agent=Depends(get_agent)):
-    return await ask_gemini(agent, query)
+class UserMessage(BaseModel):
+    msg: str
+
+
+@agent_router.post("/")
+async def ask_agent(message: UserMessage, agent=Depends(get_agent)):
+    return await ask_gemini(agent, query=message.msg)
