@@ -1,10 +1,17 @@
 from langchain_core.documents import Document
+from pydantic import BaseModel
 
 
-def clean_text(documents: list[Document]) -> list[Document]:
+class CleanedDocs(BaseModel):
+    cleaned_documents: list[Document]
+    file_contents: dict[str, str]
+
+
+def clean_text(documents: list[Document]) -> CleanedDocs:
     """Clean langchain documents"""
 
     cleaned_documents = []
+    file_contents = {}
 
     for doc in documents:
         text = doc.page_content
@@ -12,16 +19,7 @@ def clean_text(documents: list[Document]) -> list[Document]:
         doc.page_content = " ".join(text.split())
         cleaned_documents.append(doc)
 
-    return cleaned_documents
-
-
-def get_file_contents(documents: list[Document]) -> dict:
-    """Clean langchain documents"""
-
-    file_contents = {}
-
-    for doc in documents:
         source = doc.metadata["source"]
         file_contents[source] = doc.page_content
 
-    return file_contents
+    return {"cleaned_documents": cleaned_documents, "file_contents": file_contents}

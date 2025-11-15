@@ -1,5 +1,5 @@
-def add_documents(vector_store, documents, ids):
-    return vector_store.add_documents(documents=documents, ids=ids)
+async def add_documents(vector_store, documents, ids):
+    return await vector_store.aadd_documents(documents=documents, ids=ids)
 
 
 def similarity_search(vector_store, query, k=3, filter=None):

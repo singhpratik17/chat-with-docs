@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Depends, UploadFile
+from fastapi import APIRouter, Request, Depends, UploadFile, File
 from .ingest import ingest
 
 
@@ -11,11 +11,7 @@ ingestion_router = APIRouter(prefix="/ingest", dependencies=[Depends(get_vector_
 
 @ingestion_router.post("/files")
 async def ingest_files(
-    uploads: list[UploadFile], vector_store=Depends(get_vector_store)
+    files: list[UploadFile] = File(...), vector_store=Depends(get_vector_store)
 ):
-    print(f"Uploads: {uploads}")
-    file_paths = [file.filename for file in uploads]
-    print(f"file_paths: {file_paths}")
-    res = await ingest(file_paths=file_paths, vector_store=vector_store)
-    print("res", res)
-    return f"Uploaded {file_paths}"
+    await ingest(files=files, vector_store=vector_store)
+    return {"msg": "Uploaded"}
