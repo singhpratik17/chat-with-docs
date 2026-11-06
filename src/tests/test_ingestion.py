@@ -76,7 +76,9 @@ from src.ingestion.document_loader import ingest
 
 
 def test_ingest():
-    out = ingest(["dummy/sample document.pdf", "dummy/finland.txt"])
+    out = ingest(
+        ["samples/infofinland-tax-card.txt", "samples/infofinland-rental-home.txt"]
+    )
     print(f"Embedded document: {out}")
 
 

@@ -5,7 +5,7 @@ from agent.agent import init_agent
 prompts = [
     "What health services are included in occupational health?",
     "Where is Tax card office? How can I reach them?",
-    "Who is this doc from?",
+    "Who publishes this information?",
     "Summarise the doc in 3 sentences",
     "What does the finnish id card contain?",
     "How to create a bank account? Explain in minimal simple steps",
