@@ -1,87 +1,74 @@
 # Chat with your docs
 
-An AI agent that can answer questions from internal documents (HR policies, manuals, guides).
+An AI agent that answers questions from uploaded documents (HR policies, manuals, guides), citing the source file and page.
 
 # Sample outputs
 
-The examples below use three public pages from [InfoFinland](https://www.infofinland.fi/en), saved as plain text in [`samples/`](samples/):
+The examples use public documents stored in [`samples/`](samples/):
 
-- [Tax card](https://www.infofinland.fi/en/work-and-enterprise/taxation/tax-card)
-- [Registering as a resident](https://www.infofinland.fi/en/moving-to-finland/registering-as-a-resident)
-- [Rental home](https://www.infofinland.fi/en/housing/rental-home)
+- [`migri-information-package-work.pdf`](samples/migri-information-package-work.pdf): the Finnish Immigration Service's information package on residence permits for work ([source](https://migri.fi/documents/5202425/175318957/Information%20package%20-%20Work.pdf/b4e71128-27b9-cae5-300f-b66a52a50fec/Information%20package%20-%20Work.pdf)).
+- Three [InfoFinland](https://www.infofinland.fi/en) pages saved as text: [Tax card](https://www.infofinland.fi/en/work-and-enterprise/taxation/tax-card), [Registering as a resident](https://www.infofinland.fi/en/moving-to-finland/registering-as-a-resident) and [Rental home](https://www.infofinland.fi/en/housing/rental-home).
 
-Source: InfoFinland.fi (public information for people moving to Finland), retrieved November 2026.
-
-### Ingest the documents
+Upload them together:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/ingest/files \
+  -F files=@samples/migri-information-package-work.pdf \
   -F files=@samples/infofinland-tax-card.txt \
   -F files=@samples/infofinland-registering-as-a-resident.txt \
   -F files=@samples/infofinland-rental-home.txt
 ```
 
-```json
-{"msg": "Uploaded"}
-```
+Questions go to `POST /ask-agent/` as `{"msg": "..."}`. Each answer comes back with the file it was drawn from and, for PDFs, the page.
 
-### Sample prompt 1: answer drawn from one document
+### Can I start working in Finland before my residence permit is approved?
 
-```bash
-curl -X POST http://127.0.0.1:8000/ask-agent/ -H 'Content-Type: application/json' \
-  -d '{"msg": "I just moved to Finland. How do I get a tax card, and how can I contact the Tax Administration in English?"}'
-```
+> No, you cannot start working in Finland before your residence permit is approved if you are a citizen from outside the EU. Your right to work depends on the residence permit granted to you.
 
-```json
-{
-  "file_name": "infofinland-tax-card.txt",
-  "message": "To get a tax card in Finland after moving there, visit a Tax Administration service point. You will need to estimate your annual income and have a Finnish personal identity code. You can obtain a personal identity code by registering as a resident with the Digital and Population Data Services Agency or at certain Tax Administration service points. To contact the Tax Administration in English, you can call their telephone service at 029 497 050, use the MyTax online service, or visit a tax office."
-}
-```
+`file_name`: `migri-information-package-work.pdf` · `page`: `14`
 
-### Sample prompt 2: specific fact lookup
+### What are the steps to apply for a residence permit as an employee?
 
-```bash
-curl -X POST http://127.0.0.1:8000/ask-agent/ -H 'Content-Type: application/json' \
-  -d '{"msg": "What happens if I don'"'"'t show my tax card to my employer?"}'
-```
+> **Prepare:**
+> 1. Check if you need a residence permit (if you are from outside the EU, yes; if from the EU, register your residence).
+> 2. Determine which application to fill in based on your work using the Application Finder.
+> 3. Learn about the requirements for entry into Finland and for a residence permit.
+> 4. Prepare all necessary attachments for your residence permit application.
+>
+> **Apply:**
+>
+> 5. Apply for a residence permit in Enter Finland and add the attachments to your application.
+> 6. Pay for the application (and for any family member moving to Finland with you).
+> 7. Your employer supplements the terms of your employment in your application.
+>
+> **Prove your identity:**
+>
+> 8. Book an appointment to prove your identity.
+>
+> **Follow the processing of the application:**
+>
+> 9. Follow the processing of the application in Enter Finland.
+> 10. If necessary, add more information to your application.
 
-```json
-{
-  "file_name": "infofinland-tax-card.txt",
-  "message": "If you do not show your tax card to your employer, they will deduct 60% of your salary as taxes."
-}
-```
+`file_name`: `migri-information-package-work.pdf` · `page`: `3`
 
-### Sample prompt 3: partial answer, gap stated
+### What is the employer's role in the application?
 
-The rental page links to a separate page for deposit details, so the agent answers what it can and says what is missing.
+> The employer's role in the employee's residence permit process includes advising the employee on choosing the correct application and encouraging them to apply through Enter Finland. The employer must also deliver the terms of employment, information, and attachments, preferably through Enter Finland for Employers. If they cannot use Enter Finland for Employers, they must provide the necessary information and attachments to the employee using a terms of employment form so the employee can attach them to their application. It's important to note that the employer cannot apply for a residence permit on behalf of the employee.
 
-```bash
-curl -X POST http://127.0.0.1:8000/ask-agent/ -H 'Content-Type: application/json' \
-  -d '{"msg": "What do I need to sign a lease and what is a typical rental deposit?"}'
-```
+`file_name`: `migri-information-package-work.pdf` · `page`: `10`
 
-```json
-{
-  "file_name": "infofinland-rental-home.txt",
-  "message": "To sign a lease in Finland, lessors typically require a good credit history, sufficient income or funds to pay rent (Kela's benefits are included), and proof of identity. Some landlords may also require you to have registered your right of residence in Finland or possess a residence permit valid for at least one year, as well as a Finnish personal identity code. You may need to provide documents such as your latest payslip, a copy of your taxation decision (showing assets), loan certificates, and a copy of your residence permit or passport if you are not an EU citizen. A credit check is also common, and most landlords require you to take out home insurance. The provided documents do not specify a typical rental deposit amount."
-}
-```
+### What happens if I don't show my tax card to my employer?
 
-### Sample prompt 4: off-topic question
+> If you do not show your tax card to your employer, they will deduct 60% of your salary as taxes.
 
-```bash
-curl -X POST http://127.0.0.1:8000/ask-agent/ -H 'Content-Type: application/json' \
-  -d '{"msg": "Why is Halloween celebrated?"}'
-```
+`file_name`: `infofinland-tax-card.txt` · `page`: `null` (text files have no pages)
 
-```json
-{
-  "file_name": "N/A",
-  "message": "I am sorry, but I cannot answer questions about the celebration of Halloween as this information is not available in the documents I have access to. My knowledge is limited to the provided documents, which focus on practical information for living in Finland."
-}
-```
+### Why is Halloween celebrated?
+
+> I am sorry, but I cannot answer your question about why Halloween is celebrated as this information is not available in the documents I have access to. My documents primarily focus on information regarding residence permits, working in Finland, and rental homes.
+
+`file_name`: `null` · `page`: `null`
 
 # Development:
 

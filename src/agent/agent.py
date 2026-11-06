@@ -17,8 +17,12 @@ agent_answer_format = {
             "type": "string",
             "description": "Source file name",
         },
+        "page": {
+            "type": ["integer", "null"],
+            "description": "Page number in the source file the answer comes from, or null if not a PDF",
+        },
     },
-    "required": ["message", "file_name"],
+    "required": ["message", "file_name", "page"],
 }
 
 

@@ -22,11 +22,8 @@ async def load_files(files: list[str]) -> list[Document]:
             #     return f"{file} - Input not a file."
             if extension == "pdf":
                 try:
-                    loader = PyPDFLoader(
-                        file_path=file_path,
-                        mode="single",
-                        pages_delimiter="\n--THIS IS A CUSTOM END OF PAGE--\n",
-                    )
+                    # One document per page so chunks keep their page number
+                    loader = PyPDFLoader(file_path=file_path, mode="page")
                     doc = await loader.aload()
                 except Exception as e:
                     return f"Error loading pdf file {filename} : {e}"
@@ -40,6 +37,7 @@ async def load_files(files: list[str]) -> list[Document]:
                 raise HTTPException(
                     status_code=400, detail=f"Unsupported file type: {filename}"
                 )
-            doc[0].metadata["source"] = filename
+            for page in doc:
+                page.metadata["source"] = filename
             documents.extend(doc)
     return documents
